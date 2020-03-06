@@ -35,6 +35,9 @@ RUN yum install -y \
         libxml2-devel \
         python-devel \
         python3-devel \
+        # additionnal system requirement for python and R packages
+        mariadb-devel \
+        ghostscript \
     && yum clean all
 
 # Download and extract DSS kit
@@ -58,9 +61,10 @@ RUN mkdir -p /usr/local/lib/R/site-library \
 
 # Entry point
 WORKDIR /home/dataiku
-USER dataiku
-
 COPY run.sh /home/dataiku/
+RUN chmod -v 755 /home/dataiku/run.sh
+
+USER dataiku
 
 EXPOSE $DSS_PORT
 
