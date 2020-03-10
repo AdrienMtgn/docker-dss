@@ -4,7 +4,7 @@ ARG dssVersion
 
 ENV DSS_VERSION="$dssVersion" \
     DSS_DATADIR="/home/dataiku/dss" \
-    DSS_PORT=10000
+    DSS_PORT=11000
 
 # Dataiku account and data dir setup
 RUN useradd dataiku \
@@ -38,7 +38,7 @@ USER dataiku
 RUN DSSKIT="dataiku-dss-$DSS_VERSION" \
     && cd /home/dataiku \
     && echo "+ Installing DSS" \
-    && "$DSSKIT"/installer.sh -n -d ${DSS_DATADIR} -p ${DSS_PORT} -l License.json
+    && "$DSSKIT"/installer.sh -n -t automation -d ${DSS_DATADIR} -p ${DSS_PORT} -l License.json
 
 # Entry point
 EXPOSE $DSS_PORT
