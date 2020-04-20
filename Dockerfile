@@ -1,10 +1,13 @@
 FROM debian:9
 
-ARG dssVersion
+ARG version
+ARG node
+ARG port
 
-ENV DSS_VERSION="$dssVersion" \
+ENV DSS_VERSION=$version \
     DSS_DATADIR="/home/dataiku/dss" \
-    DSS_PORT=13000
+    DSS_PORT=$port \ 
+    DSS_NODE=$node
 
 # Dataiku account and data dir setup
 RUN useradd dataiku \
@@ -24,23 +27,16 @@ RUN DSSKIT="dataiku-dss-$DSS_VERSION" \
     && rm "$DSSKIT.tar.gz" \
     && chown -Rh dataiku:dataiku "$DSSKIT" \
     && echo "+ Installing dependancies" \
-    && "$DSSKIT"/scripts/install/install-deps.sh -yes -with-r -with-chrome
+    && "$DSSKIT"/scripts/install/install-deps.sh -yes -with-r
 
 
-# copy files
+# Entry point
 WORKDIR /home/dataiku
 COPY run.sh /home/dataiku/
 COPY License.json /home/dataiku/
 RUN chmod -v 755 /home/dataiku/run.sh
 
-# Install DSS
 USER dataiku
-RUN DSSKIT="dataiku-dss-$DSS_VERSION" \
-    && cd /home/dataiku \
-    && echo "+ Installing DSS" \
-    && "$DSSKIT"/installer.sh -n -t apideployer -d ${DSS_DATADIR} -p ${DSS_PORT} -l License.json
-
-# Entry point
 EXPOSE $DSS_PORT
 
 CMD [ "/home/dataiku/run.sh" ]

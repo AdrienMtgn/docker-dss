@@ -4,7 +4,7 @@ DSS_INSTALLDIR="/home/dataiku/dataiku-dss-$DSS_VERSION"
 
 if [ ! -f "$DSS_DATADIR"/bin/env-default.sh ]; then
 	# Initialize new data directory
-	"$DSS_INSTALLDIR"/installer.sh -d "$DSS_DATADIR" -p "$DSS_PORT"
+	"$DSS_INSTALLDIR"/installer.sh -n -t "$DSS_NODE" -d "$DSS_DATADIR" -p "$DSS_PORT" -l "/home/dataiku/License.json"
 	"$DSS_DATADIR"/bin/dssadmin install-R-integration
 	echo "dku.registration.channel=docker-image" >>"$DSS_DATADIR"/config/dip.properties
 

@@ -1,0 +1,58 @@
+version=5.1.4
+node="apideployer"
+
+case "$node" in 
+    "design")
+    echo "design node"
+    port=10000
+    ;;
+    "automation")
+    echo "automation node"
+    port=11000
+    ;;
+    "apideployer")
+    echo "apideployer node"
+    port=12000
+    ;;
+    "api")
+    echo "api node"
+    port=13000
+    ;;
+    *)
+    echo "error"
+    #exit 999
+    ;;
+esac
+
+img_name=registry.santiane.io/image/dss:$version-$node
+
+cmd_build="docker build -t $img_name --build-arg version=$version --build-arg port=$port --build-arg node=$node -f Dockerfile ."
+$cmd_build
+
+docker login registry.santiane.io
+cmd_push="docker push $img_name"
+$cmd_push
+
+
+
+docker run 
+-d 
+-v my_vol:/home/dataiku/dss:rw
+-p 00000/00000/tcp
+--network my_net
+--ip my_ip
+image:version
+
+
+if [ $node="design" ]; then 
+    port=10000
+elif [ $node="automation" ]; then
+    port=11000
+elif [ $node="apideployer" ]; then 
+    port=12000
+elif [ $node="api" ]; then
+    port=13000
+else
+    echo "node pas bon"
+    exit 999
+fi
